@@ -11,7 +11,6 @@ class Photo extends Component {
     return (
       <div className="App">
         <ul>
-        {console.log(this.props.posts)}
           {this.props.posts.map(post =>
             <img src={post.url} key={post.id}></img>
           )}

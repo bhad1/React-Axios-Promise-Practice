@@ -4,6 +4,20 @@ import './App.css';
 import Photo from './components/Photo';
 import Loading from './components/Loading';
 import axios from 'axios';
+import fetchPictures from './utils/api';
+var api = require('./utils/api');
+
+function PhotoGallerySizes (props){
+  var amounts = ["5", "10", "25", "100", "500"];
+
+  return (
+    <ul>
+      {amounts.map((amount) => {
+        return <li><a onClick={() => props.updateAmountChoice(amount)}>{amount}</a></li>
+      })}
+    </ul>
+  )
+}
 
 class App extends Component {
   constructor(props){
@@ -17,10 +31,16 @@ class App extends Component {
     };
   }
 
+  updateAmountChoice = (amount) =>{
+    this.setState({
+      numOfPhotos: parseInt(amount)
+    })
+  }
+
   componentDidMount() {
-    axios.get('https://jsonplaceholder.typicode.com/photos').then(response => {
-      const posts = response.data.slice(1,this.state.numOfPhotos);
-      this.setState({ posts });
+    api.fetchPictures(this.state.numOfPhotos).then(response => {
+      const posts = response;
+      this.setState({posts});
       this.setState({photosReceived: true});
     });
   }
@@ -35,10 +55,9 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <PhotoGallerySizes updateAmountChoice={this.updateAmountChoice} />
         </div>
-
+        {console.log(this.state.numOfPhotos)}
         {content}
       </div>
     );
