@@ -7,13 +7,18 @@ import axios from 'axios';
 import fetchPictures from './utils/api';
 var api = require('./utils/api');
 
+
 function PhotoGallerySizes (props){
-  var amounts = ["5", "10", "25", "100", "500"];
 
   return (
     <ul>
-      {amounts.map((amount) => {
-        return <li><a onClick={() => props.updateAmountChoice(amount)}>{amount}</a></li>
+      {props.amounts.map((amount) => {
+        return (
+                <li className="success">
+                  <button className="numButton" onClick={() => props.updateAmountChoice(amount)}>{amount}</button>
+                  <button className="xButton" onClick={() => props.deleteAmount(amount)}>X</button>
+                </li>
+              )
       })}
     </ul>
   )
@@ -27,14 +32,49 @@ class App extends Component {
       posts: [],
       rootAPI: 'https://jsonplaceholder.typicode.com',
       numOfPhotos: 100,
-      photosReceived: false
+      photosReceived: false,
+      amounts: ["5", "10", "25", "50", "100"]
     };
+    // this.updateAmountChoice = this.updateAmountChoice.bind(this);
+    // api.fetchPictures = api.fetchPictures.bind(this);
   }
 
   updateAmountChoice = (amount) =>{
     this.setState({
-      numOfPhotos: parseInt(amount)
+      numOfPhotos: parseInt(amount),
+      photosReceived: false
     })
+
+    api.fetchPictures(parseInt(amount)).then(response => {
+      const posts = response;
+      this.setState({posts});
+      this.setState({photosReceived: true});
+    });
+    console.log(this.state);
+  }
+
+  deleteAmount = (xAmount) => {
+    this.setState({
+      amounts: this.state.amounts.filter((amount) =>{return amount != xAmount})
+    });
+  }
+
+  // addNewAmount = (event) =>{
+  //   this.setState({
+  //     amounts: event.target.value
+  //   })
+  // }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    var newAmounts = this.state.amounts;
+    var newAmount = this.refs.amountInput.value;
+    this.refs.amountInput.value ="";
+    newAmounts.push(newAmount);
+    newAmounts.sort((a,b) => {return a-b});
+    this.setState({
+      amounts:newAmounts
+    })
+    console.log(this.state.amounts);
   }
 
   componentDidMount() {
@@ -52,12 +92,16 @@ class App extends Component {
     } else {
       content = <Loading />
     }
+
     return (
       <div className="App">
         <div className="App-header">
-          <PhotoGallerySizes updateAmountChoice={this.updateAmountChoice} />
+          <PhotoGallerySizes amounts={this.state.amounts} deleteAmount={this.deleteAmount} updateAmountChoice={this.updateAmountChoice} />
+          <form onSubmit={this.handleSubmit.bind(this)}>
+            <input placeholder="New Amount" ref="amountInput"></input>
+            <button type="submit"> Add Amount</button>
+          </form>
         </div>
-        {console.log(this.state.numOfPhotos)}
         {content}
       </div>
     );

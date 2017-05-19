@@ -22,3 +22,27 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+button{
+  cursor: pointer;
+}
+li{
+  list-style-type: none;
+  display: inline-block;
+  width: 50px;
+  padding: 0 10px 0 10px;
+}
+.numButton{
+  width: 70%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  display: inline-block;
+}
+.xButton{
+  width: 30%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  display: inline-block;
+  border: solid blue 2px;
+}
