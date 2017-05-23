@@ -57,6 +57,7 @@ class App extends Component {
     this.setState({
       amounts: this.state.amounts.filter((amount) =>{return amount != xAmount})
     });
+
   }
 
   // addNewAmount = (event) =>{
